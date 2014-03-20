@@ -136,13 +136,8 @@ module.exports = function(grunt) {
       src.forEach(function(srcFile) {
         var internalFileName = (isExpandedPair) ? file.dest : exports.unixifyPath(path.join(file.dest || '', srcFile));
 
-        var properties = { name: internalFileName };
-
-        if (typeof exports.options.fileSettings === 'function') {
-            exports.options.fileSettings(srcFile, properties);
-        }
-
-        archive.file(srcFile, properties, function(err) {
+        var stat = fs.statSync(srcFile);
+        archive.file(srcFile, { name: internalFileName, date: stat.mtime }, function(err) {
           if (err) {
             archive.emit('error', err);
             return;
